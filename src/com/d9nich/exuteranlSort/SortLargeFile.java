@@ -38,7 +38,8 @@ public class SortLargeFile {
                 list[i] = input.readInt();
             }
             // Sort an array list[0..i−1]
-            java.util.Arrays.sort(list, 0, i);
+            //Increased speed on multicore devices.
+            java.util.Arrays.parallelSort(list, 0, i);
             // Write the array to f1.dat
             for (int j = 0; j < i; j++) {
                 output.writeInt(list[j]);
@@ -96,13 +97,12 @@ public class SortLargeFile {
      */
     private static void mergeSegments(int numberOfSegments, int segmentSize, DataInputStream f1, DataInputStream f2,
                                       DataOutputStream f3) throws Exception {
-        for (int i = 0; i < numberOfSegments; i++) {
+        for (int i = 0; i < numberOfSegments; i++)
             mergeTwoSegments(segmentSize, f1, f2, f3);
-        }
+
         // If f1 has one extra segment, copy it to f3
-        while (f1.available() > 0) {
+        while (f1.available() > 0)
             f3.writeInt(f1.readInt());
-        }
     }
 
     /**
