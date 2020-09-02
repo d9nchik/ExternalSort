@@ -27,7 +27,6 @@ public class SortLargeFile {
      * Sort original file into sorted segments
      */
     private static int initializeSegments(int segmentSize, String originalFile, String f1) throws Exception {
-        // Same as Listing 23.12, so omitted
         int[] list = new int[segmentSize];
         DataInputStream input = new DataInputStream(new BufferedInputStream(new FileInputStream(originalFile)));
         DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(f1)));
@@ -65,7 +64,7 @@ public class SortLargeFile {
     }
 
     private static void mergeOneStep(int numberOfSegments, int segmentSize, String f1, String f2, String f3)
-            throws Exception {
+            throws Exception {//TODO: change to try-with-resources
         DataInputStream f1Input = new DataInputStream(new BufferedInputStream(new FileInputStream(f1), BUFFER_SIZE));
         DataOutputStream f2Output = new DataOutputStream(new BufferedOutputStream(
                 new FileOutputStream(f2), BUFFER_SIZE));// Copy half number of segments from f1.dat to f2.dat
@@ -76,8 +75,7 @@ public class SortLargeFile {
                 new BufferedInputStream(new FileInputStream(f2), BUFFER_SIZE));
         DataOutputStream f3Output = new DataOutputStream(
                 new BufferedOutputStream(new FileOutputStream(f3), BUFFER_SIZE));
-        mergeSegments(numberOfSegments / 2,
-                segmentSize, f1Input, f2Input, f3Output);
+        mergeSegments(numberOfSegments / 2, segmentSize, f1Input, f2Input, f3Output);
         f1Input.close();
         f2Input.close();
         f3Output.close();
@@ -96,8 +94,8 @@ public class SortLargeFile {
     /**
      * Merge all segments
      */
-    private static void mergeSegments(int numberOfSegments,
-                                      int segmentSize, DataInputStream f1, DataInputStream f2, DataOutputStream f3) throws Exception {
+    private static void mergeSegments(int numberOfSegments, int segmentSize, DataInputStream f1, DataInputStream f2,
+                                      DataOutputStream f3) throws Exception {
         for (int i = 0; i < numberOfSegments; i++) {
             mergeTwoSegments(segmentSize, f1, f2, f3);
         }
@@ -110,10 +108,8 @@ public class SortLargeFile {
     /**
      * Merges two segments
      */
-    private static void mergeTwoSegments(int segmentSize,
-                                         DataInputStream f1, DataInputStream f2,
-                                         DataOutputStream f3) throws Exception {
-        // Same as Listing 23.15, so omitted
+    private static void mergeTwoSegments(int segmentSize, DataInputStream f1, DataInputStream f2, DataOutputStream f3)
+            throws Exception {
         int intFromF1 = f1.readInt();
         int intFromF2 = f2.readInt();
         int f1Count = 1;
