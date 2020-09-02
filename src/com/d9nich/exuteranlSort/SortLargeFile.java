@@ -3,15 +3,8 @@ package com.d9nich.exuteranlSort;
 import java.io.*;
 
 public class SortLargeFile {
-    public static final int MAX_ARRAY_SIZE = 100_000;
-    public static final int BUFFER_SIZE = 100_000;
-
-    public static void main(String[] args) throws Exception {
-        // Sort largedata.dat to sortedfile.dat
-        sort("largedata.dat", "sortedfile.dat");
-        // Display the first 100 numbers in the sorted file
-        displayFile("sortedfile.dat");
-    }
+    public static final int MAX_ARRAY_SIZE = 500_000_000;
+    public static final int BUFFER_SIZE = 500_000_000;
 
     /**
      * Sort data in source file and into target file
@@ -138,21 +131,6 @@ public class SortLargeFile {
         }
         while (f2.available() > 0 && f2Count++ < segmentSize) {
             f3.writeInt(f2.readInt());
-        }
-    }
-
-    /**
-     * Display the first 100 numbers in the specified file
-     */
-    public static void displayFile(String filename) {
-        try {
-            DataInputStream input =
-                    new DataInputStream(new FileInputStream(filename));
-            for (int i = 0; i < 100; i++)
-                System.out.print(input.readInt() + " ");
-            input.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
 }
