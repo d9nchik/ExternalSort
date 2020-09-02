@@ -1,4 +1,4 @@
-package com.d9nich.exuteranlSort;
+package com.d9nich.exteranlSort;
 
 import java.io.*;
 

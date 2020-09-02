@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import static com.d9nich.exuteranlSort.SortLargeFile.sort;
+import static com.d9nich.exteranlSort.SortLargeFile.sort;
 
 public class Main {
 
