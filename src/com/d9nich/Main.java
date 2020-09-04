@@ -37,7 +37,7 @@ public class Main {
         try {
             DataInputStream input =
                     new DataInputStream(new FileInputStream(filename));
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 100 && input.available() > 0; i++)
                 System.out.print(input.readInt() + " ");
             input.close();
         } catch (IOException ex) {

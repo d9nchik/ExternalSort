@@ -3,7 +3,7 @@ package com.d9nich.exteranlSort;
 import java.io.*;
 
 public class SortLargeFile {
-    public static final int MAX_ARRAY_SIZE = 500_000_000;
+    public static final int MAX_ARRAY_SIZE = 500_000_000;//set 2 to test small.dat
     public static final int BUFFER_SIZE = 500_000_000;
 
     /**
