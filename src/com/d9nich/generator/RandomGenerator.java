@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.util.Random;
 
 public class RandomGenerator implements Generatable {
+    /**
+     * @param fileName name of resulting file
+     * @param dataSize how many integers we should write to file
+     */
     @Override
     public void generate(String fileName, int dataSize) {
         Random random = new Random();

@@ -4,6 +4,10 @@ import java.io.*;
 
 public class SequentGenerator implements Generatable {
 
+    /**
+     * @param fileName name of resulting file
+     * @param dataSize how many integers we should write to file
+     */
     @Override
     public void generate(String fileName, int dataSize) {
         int number = Integer.MIN_VALUE;

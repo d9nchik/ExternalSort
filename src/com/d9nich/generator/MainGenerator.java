@@ -9,6 +9,7 @@ public class MainGenerator {
         new Thread(() -> new SequentGenerator().generate("sequent.dat", COUNT_OF_NUMBERS)).start();
         Thread second = new Thread(() -> new ReverseSequentGenerator().generate("reSequent.dat", COUNT_OF_NUMBERS));
         second.start();
+        new Thread(()->new SmallGenerator().generate("small.dat", 0)).start();
         new RandomGenerator().generate("random.dat", COUNT_OF_NUMBERS);
 
         //Waiting before exit
