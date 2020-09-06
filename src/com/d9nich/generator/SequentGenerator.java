@@ -12,7 +12,7 @@ public class SequentGenerator implements Generatable {
      * @param dataSize how many integers we should write to file
      */
     @Override
-    public void generate(String fileName, long dataSize) {
+    public void generate(String fileName, int dataSize) {
         int number = Integer.MIN_VALUE;
         try (DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)))) {
             for (int i = 0; i < dataSize; i++)
