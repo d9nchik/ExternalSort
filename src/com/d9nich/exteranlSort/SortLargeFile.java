@@ -9,7 +9,7 @@ import java.nio.channels.FileChannel;
 
 public class SortLargeFile {
     public static final int SIZE_OF_INT = 4;
-    public static final int MAX_ARRAY_SIZE = 2;//set 2 to test small.dat
+    public static final int MAX_ARRAY_SIZE = 500_000_000;//set 2 to test small.dat
 
     /**
      * Sort data in source file and into target file
