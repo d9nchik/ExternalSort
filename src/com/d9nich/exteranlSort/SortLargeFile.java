@@ -14,7 +14,7 @@ public class SortLargeFile {
      */
     public static void sort(String sourcefile, String targetfile) throws Exception {
         // Implement Phase 1: Create initial segments
-        int numberOfSegments = initializeSegments(MAX_ARRAY_SIZE, sourcefile, "f1.dat");
+        int numberOfSegments = initializeSegments(sourcefile);
         // Implement Phase 2: Merge segments recursively
         merge(numberOfSegments, MAX_ARRAY_SIZE, "f1.dat", "f2.dat", "f3.dat", targetfile);
     }
@@ -28,10 +28,10 @@ public class SortLargeFile {
      * Also read: <a href="https://howtodoinjava.com/java/nio/memory-mapped-files-mappedbytebuffer/">
      * MMF in Java</a>
      */
-    private static int initializeSegments(int segmentSize, String originalFile, String f1) {
-        int[] list = new int[segmentSize];
+    private static int initializeSegments(String originalFile) {
+        int[] list = new int[SortLargeFile.MAX_ARRAY_SIZE];
         try (FileInputStream input = new FileInputStream(originalFile);
-             DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(f1)))) {
+             DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("f1.dat")))) {
             int numberOfSegments = 0;
 
             //Get file channel in read-only mode
@@ -50,7 +50,7 @@ public class SortLargeFile {
             for (int k = 0; k < intBuffer.limit(); k++) {
                 numberOfSegments++;
                 int i = 0;
-                for (; k < intBuffer.limit() && i < segmentSize; i++, k++) {
+                for (; k < intBuffer.limit() && i < SortLargeFile.MAX_ARRAY_SIZE; i++, k++) {
                     list[i] = intBuffer.get();
                 }
                 // Sort an array list[0..i−1]
