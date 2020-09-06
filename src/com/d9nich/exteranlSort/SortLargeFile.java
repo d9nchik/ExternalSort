@@ -6,8 +6,8 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 public class SortLargeFile {
-    public static final int MAX_ARRAY_SIZE = 2;//set 2 to test small.dat
-    public static final int BUFFER_SIZE = 300_000_000;
+    public static final int MAX_ARRAY_SIZE = 500_000_000;//set 2 to test small.dat
+    public static final int BUFFER_SIZE = 300_000 * 1_024;
 
     /**
      * Sort data in source file and into target file
