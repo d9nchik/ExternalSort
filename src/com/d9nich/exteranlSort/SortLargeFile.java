@@ -1,23 +1,31 @@
 package com.d9nich.exteranlSort;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.IntBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 public class SortLargeFile {
     public static final int SIZE_OF_INT = 4;
     public static final int MAX_ARRAY_SIZE = 2;//set 2 to test small.dat
-    public static final int BUFFER_SIZE = 300_000 * 1_024;
 
     /**
      * Sort data in source file and into target file
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored ")
     public static void sort(String sourcefile, String targetfile) throws Exception {
         // Implement Phase 1: Create initial segments
         int numberOfSegments = initializeSegments(sourcefile);
         // Implement Phase 2: Merge segments recursively
         merge(numberOfSegments, MAX_ARRAY_SIZE, "f1.dat", "f2.dat", targetfile);
+        File file = new File("f1.dat");
+        if (file.exists()) {
+            file.delete();
+        } else {
+            new File("f2.dat").delete();
+        }
     }
 
     /**
@@ -37,18 +45,12 @@ public class SortLargeFile {
 
             //Get file channel in read-only mode
             FileChannel fileChannel = input.getChannel();
-            FileChannel outputChannel = output.getChannel();
-
             //Get direct byte buffer access using channel.map() operation
-            MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
-            MappedByteBuffer outputBuffer = outputChannel.map(FileChannel.MapMode.READ_WRITE, 0, fileChannel.size());
-
             // the buffer now reads the file as if it were loaded in memory.
-//        System.out.println(buffer.isLoaded());  //prints false
-//        System.out.println(buffer.capacity());  //Get the size based on content size of file
-
-            IntBuffer intBuffer = buffer.asIntBuffer();//TODO: refactor
-            IntBuffer outputIntBuffer = outputBuffer.asIntBuffer();
+            IntBuffer intBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0,
+                    fileChannel.size()).asIntBuffer();
+            IntBuffer outputIntBuffer = output.getChannel().map(FileChannel.MapMode.READ_WRITE, 0,
+                    fileChannel.size()).asIntBuffer();
 
             //You can read the file from this buffer the way you like.
             for (int k = 0; k < intBuffer.limit(); ) {
@@ -110,16 +112,6 @@ public class SortLargeFile {
         f1Input.close();
         f2Input.close();
         output.close();
-    }
-
-    /**
-     * Copy first half number of segments from f1.dat to f2.dat
-     */
-    private static void copyHalfToF2(int numberOfSegments, int segmentSize, DataInputStream f1, DataOutputStream f2)
-            throws Exception {
-        for (int i = 0; i < (numberOfSegments / 2) * segmentSize; i++) {
-            f2.writeInt(f1.readInt());
-        }
     }
 
     /**
