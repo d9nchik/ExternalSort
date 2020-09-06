@@ -1,6 +1,9 @@
 package com.d9nich.exteranlSort;
 
 import java.io.*;
+import java.nio.IntBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 
 public class SortLargeFile {
     public static final int MAX_ARRAY_SIZE = 500_000_000;//set 2 to test small.dat
@@ -18,29 +21,53 @@ public class SortLargeFile {
 
     /**
      * Sort original file into sorted segments
+     * Very cool thing is <b>MMF(Memory-Mapped File)</b>
+     * I've been inspired by java community in
+     * <a href="https://stackoverflow.com/questions/16022053/fastest-way-to-read-huge-number-of-int-from-binary-file">
+     * StackOverFlow</a>
+     * Also read: <a href="https://howtodoinjava.com/java/nio/memory-mapped-files-mappedbytebuffer/">
+     * MMF in Java</a>
      */
-    private static int initializeSegments(int segmentSize, String originalFile, String f1) throws Exception {
+    private static int initializeSegments(int segmentSize, String originalFile, String f1) {
         int[] list = new int[segmentSize];
-        DataInputStream input = new DataInputStream(new BufferedInputStream(new FileInputStream(originalFile)));
-        DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(f1)));
-        int numberOfSegments = 0;
-        while (input.available() > 0) {
-            numberOfSegments++;
-            int i = 0;
-            for (; input.available() > 0 && i < segmentSize; i++) {
-                list[i] = input.readInt();
+        try (FileInputStream input = new FileInputStream(originalFile);
+             DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(f1)))) {
+            int numberOfSegments = 0;
+
+            //Get file channel in read-only mode
+            FileChannel fileChannel = input.getChannel();
+
+            //Get direct byte buffer access using channel.map() operation
+            MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
+
+            // the buffer now reads the file as if it were loaded in memory.
+//        System.out.println(buffer.isLoaded());  //prints false
+//        System.out.println(buffer.capacity());  //Get the size based on content size of file
+
+            IntBuffer intBuffer = buffer.asIntBuffer();
+
+            //You can read the file from this buffer the way you like.
+            for (int k = 0; k < intBuffer.limit(); k++) {
+                numberOfSegments++;
+                int i = 0;
+                for (; k < intBuffer.limit() && i < segmentSize; i++, k++) {
+                    list[i] = intBuffer.get();
+                }
+                // Sort an array list[0..i−1]
+                //Increased speed on multicore devices.
+                java.util.Arrays.parallelSort(list, 0, i);
+                // Write the array to f1.dat
+                for (int j = 0; j < i; j++) {
+                    output.writeInt(list[j]);
+                }
             }
-            // Sort an array list[0..i−1]
-            //Increased speed on multicore devices.
-            java.util.Arrays.parallelSort(list, 0, i);
-            // Write the array to f1.dat
-            for (int j = 0; j < i; j++) {
-                output.writeInt(list[j]);
-            }
+            input.close();
+            output.close();
+            return numberOfSegments;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        input.close();
-        output.close();
-        return numberOfSegments;
+        return 0;
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored ")
