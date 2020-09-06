@@ -11,13 +11,13 @@ public class Main {
     public static void main(String[] args) {
 
         System.out.println("Data before sorting: ");
-        displayFile("random.dat");
+        displayFile("small.dat");
 
         long startTime = System.currentTimeMillis();
 
         // Sort largedata.dat to sortedfile.dat
         try {
-            sort("random.dat", "sortedfile.dat");
+            sort("small.dat", "sortedfile.dat");
         } catch (Exception e) {
             e.printStackTrace();
         }

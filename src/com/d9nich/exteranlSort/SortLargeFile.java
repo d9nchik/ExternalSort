@@ -6,8 +6,8 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 public class SortLargeFile {
-    public static final int MAX_ARRAY_SIZE = 500_000_000;//set 2 to test small.dat
-    public static final int BUFFER_SIZE = 500_000_000;
+    public static final int MAX_ARRAY_SIZE = 2;//set 2 to test small.dat
+    public static final int BUFFER_SIZE = 300_000_000;
 
     /**
      * Sort data in source file and into target file
@@ -50,7 +50,7 @@ public class SortLargeFile {
             IntBuffer outputIntBuffer = outputBuffer.asIntBuffer();
 
             //You can read the file from this buffer the way you like.
-            for (int k = 0; k < intBuffer.limit(); k++) {
+            for (int k = 0; k < intBuffer.limit(); ) {
                 numberOfSegments++;
                 int i = 0;
                 for (; k < intBuffer.limit() && i < SortLargeFile.MAX_ARRAY_SIZE; i++, k++) {
@@ -64,8 +64,6 @@ public class SortLargeFile {
                     outputIntBuffer.put(list[j]);
                 }
             }
-            input.close();
-            output.close();
             return numberOfSegments;
         } catch (IOException e) {
             e.printStackTrace();
