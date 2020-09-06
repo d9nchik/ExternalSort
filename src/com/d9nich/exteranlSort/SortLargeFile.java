@@ -31,20 +31,23 @@ public class SortLargeFile {
     private static int initializeSegments(String originalFile) {
         int[] list = new int[SortLargeFile.MAX_ARRAY_SIZE];
         try (FileInputStream input = new FileInputStream(originalFile);
-             DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("f1.dat")))) {
+             RandomAccessFile output = new RandomAccessFile("f1.dat", "rw")) {
             int numberOfSegments = 0;
 
             //Get file channel in read-only mode
             FileChannel fileChannel = input.getChannel();
+            FileChannel outputChannel = output.getChannel();
 
             //Get direct byte buffer access using channel.map() operation
             MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
+            MappedByteBuffer outputBuffer = outputChannel.map(FileChannel.MapMode.READ_WRITE, 0, fileChannel.size());
 
             // the buffer now reads the file as if it were loaded in memory.
 //        System.out.println(buffer.isLoaded());  //prints false
 //        System.out.println(buffer.capacity());  //Get the size based on content size of file
 
             IntBuffer intBuffer = buffer.asIntBuffer();
+            IntBuffer outputIntBuffer = outputBuffer.asIntBuffer();
 
             //You can read the file from this buffer the way you like.
             for (int k = 0; k < intBuffer.limit(); k++) {
@@ -58,7 +61,7 @@ public class SortLargeFile {
                 java.util.Arrays.parallelSort(list, 0, i);
                 // Write the array to f1.dat
                 for (int j = 0; j < i; j++) {
-                    output.writeInt(list[j]);
+                    outputIntBuffer.put(list[j]);
                 }
             }
             input.close();
