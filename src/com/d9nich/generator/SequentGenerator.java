@@ -1,6 +1,9 @@
 package com.d9nich.generator;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class SequentGenerator implements Generatable {
 
